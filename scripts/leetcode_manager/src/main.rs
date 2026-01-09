@@ -8,7 +8,7 @@ use walkdir::WalkDir;
 struct Solution {
     id: String,
     title: String,
-    path: String,
+    docs: Vec<(String, String)>, // (Label, Path)
     lang: String,
     // Metadata from file content could be added here
     difficulty: String,
@@ -49,7 +49,7 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
     let mut solutions_map: BTreeMap<String, Solution> = BTreeMap::new();
     let mut languages_map: BTreeMap<String, HashSet<String>> = BTreeMap::new();
     
-    // Regex for ID-Slug.ext (e.g. 0001-two-sum.rs)
+    // Regex for ID-Slug.ext (e.g. 0001-two-sum.rs, 0001-two-sum-es.md)
     let re = Regex::new(r"(\d{4})-(.+)\.(\w+)").unwrap();
 
     for entry in WalkDir::new(root).into_iter().filter_map(|e| e.ok()) {
@@ -61,17 +61,24 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
                     let slug = caps[2].to_string();
                     let ext = caps[3].to_string();
 
-                    let title = Solution::slug_to_title(&slug);
                     let relative_path = path.strip_prefix("../..").unwrap_or(path).to_string_lossy().to_string();
 
-                    // If it's MD, it's the documentation/main link, not a code solution
                     if ext == "md" {
-                         solutions_map.entry(id.clone())
-                            .and_modify(|s| s.path = relative_path.clone())
+                         let label = if slug.ends_with("-es") {
+                             format!("{} - ES", Solution::slug_to_title(slug.trim_end_matches("-es")))
+                         } else if slug.ends_with("-en") {
+                             format!("{} - EN", Solution::slug_to_title(slug.trim_end_matches("-en")))
+                         } else {
+                             // Fallback for generic MD names
+                             Solution::slug_to_title(&slug)
+                         };
+
+                        solutions_map.entry(id.clone())
+                            .and_modify(|s| s.docs.push((label.clone(), relative_path.clone())))
                             .or_insert(Solution {
                                 id: id.clone(),
-                                title,
-                                path: relative_path,
+                                title: Solution::slug_to_title(&slug), // Temporary title
+                                docs: vec![(label, relative_path)],
                                 lang: String::new(),
                                 difficulty: "-".to_string(),
                                 time: "-".to_string(),
@@ -95,8 +102,8 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
 
                     solutions_map.entry(id.clone()).or_insert(Solution {
                         id: id.clone(),
-                        title,
-                        path: relative_path, // Default to first code file found if no MD yet
+                        title: Solution::slug_to_title(&slug),
+                        docs: vec![], 
                         lang: String::new(), 
                         difficulty: "-".to_string(),
                         time: "-".to_string(),
@@ -107,12 +114,21 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
         }
     }
 
-    // Convert map to vec and inject all languages
+    // Convert map to vec and sort/inject languages
     solutions_map.into_values().map(|mut s| {
         if let Some(langs) = languages_map.get(&s.id) {
              let mut sorted_langs: Vec<_> = langs.iter().cloned().collect();
              sorted_langs.sort();
              s.lang = sorted_langs.join(", ");
+        }
+        // Ensure Docs are sorted nicely (e.g. EN then ES or alphabetical)
+        s.docs.sort();
+        // Fallback title if no docs found (shouldn't happen with proper structure)
+        if s.docs.is_empty() {
+            // Keep existing s.title
+        } else {
+            // If we have docs, the title column will be constructed from them.
+            // We don't really need s.title for display in that case.
         }
         s
     }).collect()
@@ -134,8 +150,17 @@ fn generate_table(solutions: &[Solution]) -> String {
     table.push_str("| -- | ----- | ---------- | ---- | ----- | --------- |\n");
 
     for s in solutions {
-        table.push_str(&format!("| {} | [{}]({}) | {} | {} | {} | {} |\n", 
-            s.id, s.title, s.path, s.difficulty, s.time, s.space, s.lang));
+        let title_cell = if s.docs.is_empty() {
+             s.title.clone()
+        } else {
+             s.docs.iter()
+                 .map(|(label, path)| format!("[{}]({})", label, path))
+                 .collect::<Vec<_>>()
+                 .join("<br>")
+        };
+
+        table.push_str(&format!("| {} | {} | {} | {} | {} | {} |\n", 
+            s.id, title_cell, s.difficulty, s.time, s.space, s.lang));
     }
 
     table

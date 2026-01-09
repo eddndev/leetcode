@@ -1,5 +1,5 @@
 ---
-title: "Two Sum"
+title: "0001 Two Sum - ES"
 problemUrl: "https://leetcode.com/problems/two-sum/"
 difficulty: "Easy"
 pubDate: "2026-01-08"
