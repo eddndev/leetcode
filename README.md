@@ -59,4 +59,11 @@ Primary languages used for implementation:
 
 ---
 
-*Est. 2026*
+## License
+
+This repository is dual-licensed to accommodate its different components:
+
+- **Automation Scripts** (`/scripts`): Licensed under the **GNU General Public License v3.0 (GPLv3)**. This ensures that the tooling remains free and open source.
+- **Solutions & Documentation** (`/solutions`): Provided as public domain / educational content. You are free to use, modify, and learn from them without restriction, though attributing the source is appreciated.
+
+See the [LICENSE](LICENSE) file for the full GPLv3 text applicable to the codebase infrastructure.
