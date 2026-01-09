@@ -64,6 +64,22 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
                     let title = Solution::slug_to_title(&slug);
                     let relative_path = path.strip_prefix("../..").unwrap_or(path).to_string_lossy().to_string();
 
+                    // If it's MD, it's the documentation/main link, not a code solution
+                    if ext == "md" {
+                         solutions_map.entry(id.clone())
+                            .and_modify(|s| s.path = relative_path.clone())
+                            .or_insert(Solution {
+                                id: id.clone(),
+                                title,
+                                path: relative_path,
+                                lang: String::new(),
+                                difficulty: "-".to_string(),
+                                time: "-".to_string(),
+                                space: "-".to_string(),
+                            });
+                        continue;
+                    }
+
                     // Rudimentary language mapping
                     let lang = match ext.as_str() {
                         "rs" => "Rust",
@@ -74,16 +90,15 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
                         _ => &ext,
                     }.to_string();
 
-                    languages_map.entry(id.clone()).or_default().insert(format!("[{}]({})", lang, relative_path));
+                    let lang_link = format!("[{}]({})", lang, relative_path);
+                    languages_map.entry(id.clone()).or_default().insert(lang_link);
 
-                    // Use the first found file to establish the row, then append stats if we want to be fancy later.
-                    // For now, simple deduplication by ID.
                     solutions_map.entry(id.clone()).or_insert(Solution {
                         id: id.clone(),
                         title,
-                        path: relative_path, // This might need to be a list if multiple langs
-                        lang: lang.clone(), // Placeholder, we will use languages_map
-                        difficulty: "-".to_string(), // To be implemented via file parsing
+                        path: relative_path, // Default to first code file found if no MD yet
+                        lang: String::new(), 
+                        difficulty: "-".to_string(),
                         time: "-".to_string(),
                         space: "-".to_string(),
                     });
@@ -94,10 +109,11 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
 
     // Convert map to vec and inject all languages
     solutions_map.into_values().map(|mut s| {
-        let langs = languages_map.get(&s.id).unwrap();
-        let mut sorted_langs: Vec<_> = langs.iter().cloned().collect();
-        sorted_langs.sort();
-        s.lang = sorted_langs.join(", ");
+        if let Some(langs) = languages_map.get(&s.id) {
+             let mut sorted_langs: Vec<_> = langs.iter().cloned().collect();
+             sorted_langs.sort();
+             s.lang = sorted_langs.join(", ");
+        }
         s
     }).collect()
 }
@@ -118,8 +134,8 @@ fn generate_table(solutions: &[Solution]) -> String {
     table.push_str("| -- | ----- | ---------- | ---- | ----- | --------- |\n");
 
     for s in solutions {
-        table.push_str(&format!("| {} | {} | {} | {} | {} | {} |\n", 
-            s.id, s.title, s.difficulty, s.time, s.space, s.lang));
+        table.push_str(&format!("| {} | [{}]({}) | {} | {} | {} | {} |\n", 
+            s.id, s.title, s.path, s.difficulty, s.time, s.space, s.lang));
     }
 
     table
