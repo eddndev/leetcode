@@ -44,9 +44,11 @@ To maintain organization and scalability across thousands of problems, the repos
 
 *An automated index of all solved problems will be generated here.*
 
-| ID | Title | Difficulty | Time | Space |
-| -- | ----- | ---------- | ---- | ----- |
-| - | - | - | - | - |
+<!-- SOLUTIONS_TABLE_START -->
+| ID | Title | Difficulty | Time | Space | Languages |
+| -- | ----- | ---------- | ---- | ----- | --------- |
+| 0001 | Two Sum | - | - | - | [Rust](solutions/0001-0100/0001-two-sum.rs) |
+<!-- SOLUTIONS_TABLE_END -->
 
 ## Languages & Tools
 
