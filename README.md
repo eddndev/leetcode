@@ -47,7 +47,6 @@ To maintain organization and scalability across thousands of problems, the repos
 <!-- SOLUTIONS_TABLE_START -->
 | ID | Title | Difficulty | Time | Space | Languages |
 | -- | ----- | ---------- | ---- | ----- | --------- |
-| 0001 | [Two Sum](solutions/0001-0100/0001-two-sum/0001-two-sum.md) | - | - | - | [C](solutions/0001-0100/0001-two-sum/0001-two-sum.c), [Rust](solutions/0001-0100/0001-two-sum/0001-two-sum.rs) |
 <!-- SOLUTIONS_TABLE_END -->
 
 ## Languages & Tools
