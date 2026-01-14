@@ -49,6 +49,7 @@ To maintain organization and scalability across thousands of problems, the repos
 | -- | ----- | ---------- | ---- | ----- | --------- |
 | 0001 | [Two Sum - EN](solutions/0001-0100/0001-two-sum/0001-two-sum-en.md)<br>[Two Sum - ES](solutions/0001-0100/0001-two-sum/0001-two-sum-es.md) | Easy | O(n) | O(n) | [C](solutions/0001-0100/0001-two-sum/0001-two-sum.c), [Rust](solutions/0001-0100/0001-two-sum/0001-two-sum.rs) |
 | 0006 | [Zig Zag Conversion - EN](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion-en.md)<br>[Zig Zag Conversion - ES](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion-es.md) | Medium | O(n) | O(1) | [C](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion.c) |
+| 0008 | [String To Integer - EN](solutions/0001-0100/0008-string-to-integer/0008-string-to-integer-en.md)<br>[String To Integer - ES](solutions/0001-0100/0008-string-to-integer/0008-string-to-integer-es.md) | Medium | O(n) | O(1) | [C](solutions/0001-0100/0008-string-to-integer/0008-string-to-integer.c) |
 | 3454 | [Separate Squares Ii - EN](solutions/3401-3500/3454-separate-squares-ii/3454-separate-squares-ii-en.md)<br>[Separate Squares Ii - ES](solutions/3401-3500/3454-separate-squares-ii/3454-separate-squares-ii-es.md) | Hard | O(N log N) | O(N) | [C](solutions/3401-3500/3454-separate-squares-ii/3454-separate-squares-ii.c) |
 <!-- SOLUTIONS_TABLE_END -->
 
