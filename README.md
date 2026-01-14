@@ -48,6 +48,7 @@ To maintain organization and scalability across thousands of problems, the repos
 | ID | Title | Difficulty | Time | Space | Languages |
 | -- | ----- | ---------- | ---- | ----- | --------- |
 | 0001 | [Two Sum - EN](solutions/0001-0100/0001-two-sum/0001-two-sum-en.md)<br>[Two Sum - ES](solutions/0001-0100/0001-two-sum/0001-two-sum-es.md) | Easy | O(n) | O(n) | [C](solutions/0001-0100/0001-two-sum/0001-two-sum.c), [Rust](solutions/0001-0100/0001-two-sum/0001-two-sum.rs) |
+| 0006 | [Zig Zag Conversion - EN](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion-en.md)<br>[Zig Zag Conversion - ES](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion-es.md) | Medium | O(n) | O(1) | [C](solutions/0001-0100/0006-zig-zag-conversion/0006-zig-zag-conversion.c) |
 <!-- SOLUTIONS_TABLE_END -->
 
 ## Languages & Tools
