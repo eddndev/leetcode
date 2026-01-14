@@ -45,6 +45,31 @@ fn main() {
     update_readme(readme_path, &table);
 }
 
+fn extract_metadata(path: &Path) -> (String, String, String) {
+    let content = match fs::read_to_string(path) {
+        Ok(c) => c,
+        Err(_) => return ("-".to_string(), "-".to_string(), "-".to_string()),
+    };
+
+    let diff_re = Regex::new(r#"difficulty: "([^"]+)""#).unwrap();
+    let time_re = Regex::new(r#"time: "([^"]+)""#).unwrap();
+    let space_re = Regex::new(r#"space: "([^"]+)""#).unwrap();
+
+    let difficulty = diff_re.captures(&content)
+        .map(|c| c[1].to_string())
+        .unwrap_or_else(|| "-".to_string());
+    
+    let time = time_re.captures(&content)
+        .map(|c| c[1].to_string())
+        .unwrap_or_else(|| "-".to_string());
+
+    let space = space_re.captures(&content)
+        .map(|c| c[1].to_string())
+        .unwrap_or_else(|| "-".to_string());
+
+    (difficulty, time, space)
+}
+
 fn collect_solutions(root: &Path) -> Vec<Solution> {
     let mut solutions_map: BTreeMap<String, Solution> = BTreeMap::new();
     let mut languages_map: BTreeMap<String, HashSet<String>> = BTreeMap::new();
@@ -73,16 +98,23 @@ fn collect_solutions(root: &Path) -> Vec<Solution> {
                              Solution::slug_to_title(&slug)
                          };
 
+                        let (diff, time, space) = extract_metadata(path);
+
                         solutions_map.entry(id.clone())
-                            .and_modify(|s| s.docs.push((label.clone(), relative_path.clone())))
+                            .and_modify(|s| {
+                                s.docs.push((label.clone(), relative_path.clone()));
+                                if s.difficulty == "-" && diff != "-" { s.difficulty = diff.clone(); }
+                                if s.time == "-" && time != "-" { s.time = time.clone(); }
+                                if s.space == "-" && space != "-" { s.space = space.clone(); }
+                            })
                             .or_insert(Solution {
                                 id: id.clone(),
                                 title: Solution::slug_to_title(&slug), // Temporary title
                                 docs: vec![(label, relative_path)],
                                 lang: String::new(),
-                                difficulty: "-".to_string(),
-                                time: "-".to_string(),
-                                space: "-".to_string(),
+                                difficulty: diff,
+                                time: time,
+                                space: space,
                             });
                         continue;
                     }
